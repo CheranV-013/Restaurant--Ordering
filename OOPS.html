@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nimmy's Restaurant</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-image: url('https://i.pinimg.com/736x/e1/2c/b5/e12cb5bf6722cc47bfcf54562f777160.jpg');
+        background-size: cover;
+        background-position: center;
+        color: #fff;
+    }
+    .container {
+        background-color: rgba(0,0,0,0.7);
+        padding: 20px;
+        max-width: 700px;
+        margin: 40px auto;
+        border-radius: 10px;
+    }
+    input, button {
+        margin: 5px 0;
+        padding: 8px;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+    }
+    input { width: 100%; }
+    button {
+        background-color: #ff9900;
+        color: #fff;
+        cursor: pointer;
+    }
+    button:hover { background-color: #e68a00; }
+    h1,h2,h3{text-align:center;}
+    ul {list-style:none; padding-left:0;}
+    li {margin:5px 0;}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome to Nimmy's Restaurant 🍕</h1>
+
+    <div id="menu">
+        <h3>Menu:</h3>
+        <ul>
+            <li>1. Pizza - Rs.120</li>
+            <li>2. Burger - Rs.80</li>
+            <li>3. Pasta - Rs.100</li>
+            <li>4. Sandwich - Rs.60</li>
+            <li>5. Parota - Rs.80</li>
+            <li>6. Briyani - Rs.90</li>
+            <li>7. Fried Rice - Rs.90</li>
+        </ul>
+    </div>
+
+    <div id="orderInput">
+        <label>Enter item IDs (space-separated): </label>
+        <input type="text" id="itemIds" placeholder="e.g., 1 3 4">
+        <br>
+        <button id="submitItems">Submit</button>
+    </div>
+
+    <div id="quantityInput" class="hidden">
+        <p id="itemPrompt"></p>
+        <input type="number" id="itemQty" min="1">
+        <br>
+        <button id="submitQty">Add Quantity</button>
+    </div>
+
+    <div id="totalBill" class="hidden">
+        <h2>🧾 Bill</h2>
+        <table id="billTable" border="1" style="width:100%; margin-top:10px; color:white;">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price per Item</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <h3>Total Amount: Rs.<span id="billAmount"></span></h3>
+        <p>🙏 Thank you for ordering! Visit again.</p>
+        <button id="downloadPDF">Download Bill (PDF)</button>
+    </div>
+</div>
+
+<script>
+    const menu = [
+        {id:1,name:"Pizza",price:120},
+        {id:2,name:"Burger",price:80},
+        {id:3,name:"Pasta",price:100},
+        {id:4,name:"Sandwich",price:60},
+        {id:5,name:"Parota",price:80},
+        {id:6,name:"Briyani",price:90},
+        {id:7,name:"Fried Rice",price:90}
+    ];
+
+    let selectedItems = [];
+    let quantities = [];
+    let currentIndex = 0;
+
+    const itemIdsInput = document.getElementById('itemIds');
+    const submitItemsBtn = document.getElementById('submitItems');
+    const itemQtyInput = document.getElementById('itemQty');
+    const submitQtyBtn = document.getElementById('submitQty');
+    const downloadPDFBtn = document.getElementById('downloadPDF');
+
+    submitItemsBtn.addEventListener('click', startOrder);
+    submitQtyBtn.addEventListener('click', submitQty);
+
+    // Enter key triggers
+    itemIdsInput.addEventListener('keydown', e => { if(e.key === 'Enter') startOrder(); });
+    itemQtyInput.addEventListener('keydown', e => { if(e.key === 'Enter') submitQty(); });
+
+    downloadPDFBtn.addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text("Nimmy's Restaurant Bill", 105, 15, null, null, "center");
+
+        let startY = 30;
+        doc.setFontSize(12);
+        doc.text("Item", 20, startY);
+        doc.text("Qty", 80, startY);
+        doc.text("Price", 110, startY);
+        doc.text("Subtotal", 150, startY);
+        startY += 8;
+
+        let total = 0;
+        for(let i=0;i<selectedItems.length;i++){
+            const item = selectedItems[i];
+            const qty = quantities[i];
+            const subtotal = item.price*qty;
+            total += subtotal;
+
+            doc.text(item.name, 20, startY);
+            doc.text(qty.toString(), 80, startY);
+            doc.text("Rs."+item.price, 110, startY);
+            doc.text("Rs."+subtotal, 150, startY);
+            startY += 8;
+        }
+
+        doc.setFontSize(14);
+        doc.text("Total: Rs."+total, 105, startY+10, null, null, "center");
+        doc.save("MyOrder_Bill.pdf");
+    });
+
+    function startOrder(){
+        const input = itemIdsInput.value.trim();
+        if(!input){ alert("Please enter item IDs."); return; }
+
+        const ids = input.split(/\s+/).map(Number);
+
+        for(let id of ids){
+            if(!menu.find(item => item.id===id)){
+                alert("❌ Invalid item ID: "+id);
+                return;
+            }
+        }
+
+        selectedItems = ids.map(id=>menu.find(item=>item.id===id));
+        document.getElementById('orderInput').classList.add('hidden');
+        document.getElementById('quantityInput').classList.remove('hidden');
+        promptQuantity();
+    }
+
+    function promptQuantity(){
+        if(currentIndex<selectedItems.length){
+            document.getElementById('itemPrompt').innerText = 
+                `Enter quantity for ${selectedItems[currentIndex].name}:`;
+            itemQtyInput.value="";
+            itemQtyInput.focus();
+        }else{
+            generateBill();
+        }
+    }
+
+    function submitQty(){
+        const qty = parseInt(itemQtyInput.value);
+        if(isNaN(qty)||qty<=0){ alert("⚠️ Enter valid quantity."); return; }
+        quantities.push(qty);
+        currentIndex++;
+        promptQuantity();
+    }
+
+    function generateBill(){
+        document.getElementById('quantityInput').classList.add('hidden');
+        const tbody = document.querySelector("#billTable tbody");
+        tbody.innerHTML="";
+
+        let total=0;
+        for(let i=0;i<selectedItems.length;i++){
+            const item=selectedItems[i];
+            const qty=quantities[i];
+            const subtotal=item.price*qty;
+            total+=subtotal;
+
+            const row=document.createElement('tr');
+            row.innerHTML=`<td>${item.name}</td><td>${qty}</td><td>Rs.${item.price}</td><td>Rs.${subtotal}</td>`;
+            tbody.appendChild(row);
+        }
+
+        document.getElementById('billAmount').innerText=total;
+        document.getElementById('totalBill').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
