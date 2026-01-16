@@ -1,6 +1,6 @@
 # Online Ordering & Billing System
 
-## 📌 Project Overview
+## Project Overview
 **Nimmy's Restaurant** is a simple **web-based food ordering system** built using **HTML, CSS, and JavaScript**.  
 It allows users to select food items, enter quantities, generate a bill, and **download the bill as a PDF**.
 
@@ -8,19 +8,19 @@ This project is designed for **college mini-projects**, **web fundamentals pract
 
 ---
 
-## 🧠 Features
+## Features
 
-- 📋 Display restaurant menu with prices  
-- 🔢 Order items using item IDs  
-- 📦 Quantity selection for each item  
-- 🧾 Automatic bill generation  
-- 💰 Total cost calculation  
-- 📄 Download bill as **PDF** using jsPDF  
-- 🎨 Attractive UI with background image  
+-  Display restaurant menu with prices  
+-  Order items using item IDs  
+-  Quantity selection for each item  
+-  Automatic bill generation  
+-  Total cost calculation  
+-  Download bill as **PDF** using jsPDF  
+-  Attractive UI with background image  
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **HTML5** – Structure  
 - **CSS3** – Styling & layout  
@@ -29,7 +29,7 @@ This project is designed for **college mini-projects**, **web fundamentals pract
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 Restaurant-Ordering/
 ├── index.html
@@ -40,7 +40,7 @@ Restaurant-Ordering/
 
 ---
 
-## 🧑‍🍳 Menu Items
+## Menu Items
 
 | ID | Item        | Price (Rs.) |
 |----|-------------|-------------|
@@ -54,7 +54,7 @@ Restaurant-Ordering/
 
 ---
 
-## ⚙️ How It Works
+## How It Works
 
 1. User enters **item IDs** (space-separated)  
 2. System asks quantity for each selected item  
@@ -68,7 +68,7 @@ Restaurant-Ordering/
 
 ---
 
-## ▶️ How to Run the Project
+## How to Run the Project
 
 1. Download or clone the repository
 2. Open `index.html` in any modern web browser
@@ -78,7 +78,7 @@ _No server or database required._
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 - Restaurant ordering demo  
 - College mini project  
@@ -87,14 +87,14 @@ _No server or database required._
 
 ---
 
-## 👨‍💻 Developed By
+## Developed By
 
 **Cheran V**  
 2nd Year – Artificial Intelligence & Machine Learning  
 
 ---
 
-## 📜 License
+## License
 
 This project is developed for **educational purposes only**.
 
