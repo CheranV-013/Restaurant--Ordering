@@ -72,7 +72,7 @@ Restaurant-Ordering/
 
 1. Download or clone the repository
 2. Open `index.html` in any modern web browser
-3. Start ordering 🚀
+3. Start ordering
 
 _No server or database required._
 
